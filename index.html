@@ -155,12 +155,19 @@ function startGame() {
 }
 
 function startQuiz() {
-    const answer = prompt("Who is the blonde girl with green eyes... She is part of Alan Bloomgate's ride. Guess her name or fail terribly, clock is ticking make up your mind.  (Hint: Her name starts with 'J' and ends with 'er').");
-    if (answer.trim().toLowerCase() === "jennifer") {
-        window.location.href = "https://drive.google.com/file/d/1ZWN3oioKuWled0cRLOJdHmaUkMEVdZhI/view?usp=drive_link"; // Redirecționează către Google Drive
-    } else {
-        alert("Incorrect. Try again!");
-    }
+    // Căutăm să activăm ghicitoarea doar după finalizarea conversației
+    setTimeout(() => {
+        let answer;
+        do {
+            answer = prompt("Who is the blonde girl with green eyes? She is part of Alan Bloomgate's ride. Guess her name or fail terribly, clock is ticking make up your mind. (Hint: Her name starts with 'J').");
+            if (answer.trim().toLowerCase() === "jennifer") {
+                window.location.href = "https://drive.google.com/file/d/1ZWN3oioKuWled0cRLOJdHmaUkMEVdZhI/view?usp=drive_link"; // Redirecționează către Google Drive
+                break; // Ieșim din buclă când răspunsul este corect
+            } else {
+                alert("Incorrect. Try again!");
+            }
+        } while (true); // Continuă până când se răspunde corect
+    }, 1000); // Pauză mică pentru a permite finalizarea dialogului înainte de ghicitoare
 }
 
 showMessage();
