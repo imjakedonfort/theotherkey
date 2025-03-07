@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with Unknown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .chat-container {
+            width: 350px;
+            height: 600px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+        }
+        .npc {
+            background-color: #d1f7d1;
+            align-self: flex-start;
+        }
+        .player {
+            background-color: #e0e0e0;
+            align-self: flex-end;
+        }
+        .typing {
+            font-size: 14px;
+            color: #888;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+        }
+        .option-btn {
+            padding: 10px;
+            margin: 5px;
+            background-color: #5a9bd5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .option-btn:hover {
+            background-color: #3a7bbf;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="options" id="options"></div>
+</div>
+
+<script>
+// Definim conversația cu NPC-ul
+const conversation = [
+    { npc: "Bad things are going to happen...", options: ["What do you mean?", "Actually, there are always bad things happening.", "Who are you?"] },
+    { npc: "You need to be ready.", options: ["Ready for what?", "What are you yapping about?", "Leave me alone."] },
+    { npc: "The forest is dense and nobody knows what's hidden there...", options: ["Tell me more.", "I don’t trust you.", "This is weird."] },
+    { npc: "Soon you'll receive some news, be prepared.", options: ["News? Damn, like always", "What are you talking about?", "I’m not scared."] },
+    { npc: "Everything will happen so fast...", options: ["I’m ready.", "Stop playing games.", "This is crazy."] },
+    { npc: "The choice will be yours.", options: ["What choice?", "I don't trust you.", "I don’t have time for this."] },
+    { npc: "You're the one choosing to stop this now.", options: ["Stop what?", "I still have time.", "Stop scaring me."] },
+    { npc: "The storm is near.", options: ["What storm?", "Why are you making it worse than it is though?", "You’re just a joke."] },
+    { npc: "The clock is ticking.", options: ["What clock?", "You are crazy.", "I don’t care."] },
+    { npc: "There's no time for explanations or questions, just action!", options: ["And I still don't understand.", "If you say so...", "Leave me alone."] },
+    { npc: "You will see it with your own eyes.", options: ["When?", "Ok, SEE WHAT?", "Honestly, this conversation is giving me an headache."] },
+    { npc: "Are you ready to face it?", options: ["Yes.", "No.", "I don’t know."] },
+    { npc: "You will see soon.", options: ["What will I see?", "I don't want to know.", "I don't care anymore."] },
+    { npc: "Don’t say I didn’t warn you.", options: ["I’m not scared.", "What did you warn me about?", "Go away."] },
+    { npc: "Time will tell.", options: ["What do you mean?", "Just tell me.", "Stop talking in riddles."] }
+];
+
+let step = 0;
+const chatMessages = document.getElementById("chat-messages");
+const optionsDiv = document.getElementById("options");
+
+function showMessage() {
+    if (step >= conversation.length) {
+        startGame(); // După ultima parte a conversației, începe mini-jocul
+        return;
+    }
+
+    const npcText = conversation[step].npc;
+    const options = conversation[step].options;
+
+    npcTyping();
+    setTimeout(() => {
+        addMessage(npcText, true); // Mesajul NPC
+        showOptions(options); // Afișăm opțiunile
+    }, 1000);
+}
+
+function addMessage(text, isNpc) {
+    const messageDiv = document.createElement("div");
+    messageDiv.classList.add("message");
+    messageDiv.classList.add(isNpc ? "npc" : "player");
+    messageDiv.innerText = text;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function showOptions(options) {
+    optionsDiv.innerHTML = ""; 
+    options.forEach((option, index) => {
+        let btn = document.createElement("button");
+        btn.classList.add("option-btn");
+        btn.innerText = option;
+        btn.onclick = () => selectOption(index);
+        optionsDiv.appendChild(btn);
+    });
+    optionsDiv.style.display = "block";
+}
+
+function selectOption(index) {
+    const selectedText = conversation[step].options[index];
+    addMessage(selectedText, false); // Mesajul jucătorului
+
+    optionsDiv.style.display = "none"; // Ascundem opțiunile
+    step++;
+    setTimeout(showMessage, 1000); // NPC continuă conversația
+}
+
+function npcTyping() {
+    const typingDiv = document.createElement("div");
+    typingDiv.classList.add("typing");
+    typingDiv.innerText = "Unknown is typing...";
+    chatMessages.appendChild(typingDiv);
+    setTimeout(() => typingDiv.remove(), 1500); // Se oprește după 1.5 secunde
+}
+
+function startGame() {
+    // Redirect către mini-joc
+    alert("Mini-game starts now!");
+    startQuiz();
+}
+
+function startQuiz() {
+    const answer = prompt("Who is the blonde girl with green eyes... She is part of Alan Bloomgate's ride. Guess her name or fail terribly, clock is ticking make up your mind.  (Hint: Her name starts with 'J' and ends with 'er').");
+    if (answer.toLowerCase() === "Jennifer") {
+        window.location.href = "https://drive.google.com/file/d/1ZWN3oioKuWled0cRLOJdHmaUkMEVdZhI/view?usp=drive_link"; // Redirecționează către Google Drive
+    } else {
+        alert("Incorrect. Try again!");
+    }
+}
+
+showMessage();
+</script>
+
+</body>
+</html>
